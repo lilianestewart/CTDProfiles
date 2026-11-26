@@ -1,1 +1,45 @@
+pip install pycnv
 
+import pycnv
+import pylab as pl
+fname = 'test.cnv' # Some CTD cast
+
+cnv = pycnv.pycnv(fname)
+print('Test if we are in the Baltic Sea (usage of different equation of state): ' + str(cnv.baltic))
+print('Position of cast is: Longitude:', cnv.lon,'Latitude:',cnv.lat)
+print('Time of cast was:', cnv.date)
+print('Number of sensor entries (len(cnv.data.keys())):',len(cnv.data.keys()))
+print('Names of sensor entries (cnv.data.keys()):',cnv.data.keys())
+
+# Get data of entry
+key0 = list(cnv.data.keys())[0]
+data0 = cnv.data[key0]
+
+# Get derived data:
+keyd0 = list(cnv.cdata.keys())[0]
+datad0 = cnv.cdata[keyd0]
+# Get unit of derived data
+datad0_unit = cnv.cunits[keyd0]
+
+# Standard names are mapped to
+# cnv.p,cnv.CT,cnv.T,cnv.SP,cnv.oxy
+# units are _unit, e.g. cnv.p_unit
+
+# Plot standard parameters
+pl.figure(1)
+pl.clf()
+pl.subplot(1,2,1)
+pl.plot(cnv.SA,cnv.p)
+pl.xlabel('Absolute salinity [' + cnv.SA_unit + ']')
+pl.ylabel('Pressure [' + cnv.p_unit + ']')
+pl.gca().invert_yaxis()
+
+pl.subplot(1,2,2)
+pl.plot(cnv.oxy,cnv.p)
+pl.plot(cnv.cdata['oxy0'],cnv.p)
+pl.plot(cnv.cdata['oxy1'],cnv.p)
+pl.xlabel('Oxygen [' + cnv.oxy_unit + ']')
+pl.ylabel('Pressure [' + cnv.p_unit + ']')
+pl.gca().invert_yaxis()
+
+pl.show()
